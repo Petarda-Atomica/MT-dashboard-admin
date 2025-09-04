@@ -11,6 +11,13 @@ var appLogo fyne.Resource
 var globalDecryptionKey []byte
 
 func main() {
+	// Make sure the key is zeroed out before quitting
+	defer func() {
+		for i := range globalDecryptionKey {
+			globalDecryptionKey[i] = 0
+		}
+	}()
+
 	// Load logo
 	var err error
 	appLogo, err = fyne.LoadResourceFromPath("logo.png")
