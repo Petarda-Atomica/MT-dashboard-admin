@@ -123,7 +123,7 @@ func writeBlob(passPhrase, key []byte, path string) error {
 	return nil
 }
 
-func retrieveKey(passPhrase []byte) (key []byte, err error) {
+func retrieveUSBKey(passPhrase []byte) (key []byte, err error) {
 	blobCandidates := []string{}
 
 	// Find all mounted partitions
@@ -153,6 +153,7 @@ func retrieveKey(passPhrase []byte) (key []byte, err error) {
 	}
 
 	// Loop through candidates
+	passwordWrong := false
 	for _, candidate := range blobCandidates {
 		// Read blob
 		blob, err := openAndReadBlob(candidate)
@@ -175,11 +176,15 @@ func retrieveKey(passPhrase []byte) (key []byte, err error) {
 		key, err := decryptBlob(aesKey, nonce, ciphertext)
 		if err != nil {
 			log.Println("Failed to decrypt blob", candidate, "Reason:", err)
+			passwordWrong = true
 			continue
 		}
 
 		return key, nil
 	}
 
+	if passwordWrong {
+		return nil, fmt.Errorf("wrong password")
+	}
 	return nil, fmt.Errorf("no valid blobs")
 }
