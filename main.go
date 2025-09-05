@@ -30,6 +30,6 @@ func main() {
 	w.SetIcon(appLogo)
 	w.SetMaster()
 
-	loginPage(w)
+	loginPage(w, "")
 	w.ShowAndRun()
 }

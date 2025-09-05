@@ -9,9 +9,20 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"golang.org/x/image/colornames"
 )
 
-func loginPage(w fyne.Window) {
+func loginPage(w fyne.Window, receivedError string) {
+	// Make error message
+	errMsg := container.New(
+		layout.NewStackLayout())
+	errMsgText := widget.NewLabel("")
+	if receivedError != "" {
+		errMsgText.Text = receivedError
+		errMsg.Add(canvas.NewRectangle(colornames.Red))
+		errMsg.Add(container.NewHScroll(errMsgText))
+	}
+
 	// Make logo image
 	img := canvas.NewImageFromResource(appLogo)
 	img.FillMode = canvas.ImageFillContain
@@ -30,7 +41,13 @@ func loginPage(w fyne.Window) {
 		b, err := retrieveUSBKey([]byte(passwordField.Text))
 		if err != nil {
 			log.Println("Error reading USB key:", err)
-			loginPage(w)
+			switch err.Error() {
+			case "no valid blobs":
+				loginPage(w, "Introdu un stick USB valid!")
+
+			case "wrong password":
+				loginPage(w, "Parola greșită!")
+			}
 			return
 		}
 
@@ -42,6 +59,9 @@ func loginPage(w fyne.Window) {
 		for i := range b {
 			b[i] = 0
 		}
+
+		// Log
+		log.Println("Successfully decrypted USB key!")
 	}
 	passwordField.OnSubmitted = func(s string) { loginSubmit() }
 	submitButton.OnTapped = loginSubmit
@@ -49,6 +69,8 @@ func loginPage(w fyne.Window) {
 	// Build UI
 	w.SetContent(container.New(
 		layout.NewVBoxLayout(),
+		errMsg,
+
 		layout.NewSpacer(),
 
 		container.New(
