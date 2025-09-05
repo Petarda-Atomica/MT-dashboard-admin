@@ -11,7 +11,7 @@ import (
 )
 
 type mtApp struct {
-	f    func(w fyne.Window)
+	f    func(fyne.Window, func())
 	name string
 	icon fyne.Resource
 }
@@ -51,7 +51,7 @@ func appSelectPage(w fyne.Window, appList []mtApp) {
 		appsContainer.RemoveAll()
 		for _, this := range apps {
 			// Create icon
-			emptyBTN := widget.NewButton("", func() { this.f(w) })
+			emptyBTN := widget.NewButton("", func() { this.f(w, func() { appSelectPage(w, appList) }) })
 			appIcon := canvas.NewImageFromResource(this.icon)
 			appIcon.ScaleMode = canvas.ImageScaleSmooth
 			appIcon.FillMode = canvas.ImageFillContain

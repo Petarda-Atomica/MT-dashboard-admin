@@ -17,6 +17,8 @@ import (
 
 const magicHeader = "MTBLOB"
 
+var USBBlobPath string = ""
+
 func openAndReadBlob(path string) ([]byte, error) {
 	// Open file in read-only mode
 	f, err := os.OpenFile(path, os.O_RDONLY, 0400)
@@ -180,6 +182,7 @@ func retrieveUSBKey(passPhrase []byte) (key []byte, err error) {
 			continue
 		}
 
+		USBBlobPath = candidate
 		return key, nil
 	}
 

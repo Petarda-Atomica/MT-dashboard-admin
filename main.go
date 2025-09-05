@@ -5,11 +5,18 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/theme"
 )
 
 var appLogo fyne.Resource
 var globalDecryptionKey []byte
-var appList []mtApp = []mtApp{}
+var appList []mtApp = []mtApp{
+	{
+		name: "Setări",
+		icon: theme.Icon(theme.IconNameSettings),
+		f:    APP_settings,
+	},
+}
 
 func main() {
 	// Make sure the key is zeroed out before quitting
