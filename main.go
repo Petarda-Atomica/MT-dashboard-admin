@@ -9,6 +9,7 @@ import (
 
 var appLogo fyne.Resource
 var globalDecryptionKey []byte
+var appList []mtApp = []mtApp{}
 
 func main() {
 	// Make sure the key is zeroed out before quitting

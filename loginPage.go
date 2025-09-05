@@ -60,8 +60,9 @@ func loginPage(w fyne.Window, receivedError string) {
 			b[i] = 0
 		}
 
-		// Log
+		// Go to app select page
 		log.Println("Successfully decrypted USB key!")
+		appSelectPage(w, appList)
 	}
 	passwordField.OnSubmitted = func(s string) { loginSubmit() }
 	submitButton.OnTapped = loginSubmit
